@@ -26,6 +26,7 @@ rm -rf .git
 git init
 git add .
 git commit -m 'chore: initial commit'
+git branch -M main
 ```
 
 ### Share the repository:
@@ -35,7 +36,7 @@ Create an **empty**, public repository on your Github account (don't add any ini
 ```bash
 git remote add origin git@github.com:<your_username>/<your_repository_name>.git
 
-git push -u -f origin master
+git push -u -f origin main
 ```
 
 Now you're setup and can share your repository with us.
