@@ -51,3 +51,15 @@
     @apply px-4 py-2;
   }
 }
+
+button {
+  &[aria-busy] {
+    opacity: 0.6;
+    border: 1px solid var(--theme-brd);
+    pointer-events: none;
+
+    &:focus {
+      background-color: var(--theme-btn-bg-dsbl);
+    }
+  }
+}

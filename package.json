@@ -63,7 +63,10 @@
   },
   "dependencies": {
     "ethers": "^5.5.4",
-    "lit": "^2.2.2"
+    "lit": "^2.2.2",
+    "reflect-metadata": "^0.1.13",
+    "rxjs": "^7.5.5",
+    "tsyringe": "^4.6.0"
   },
   "config": {
     "commitizen": {

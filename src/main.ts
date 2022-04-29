@@ -1,10 +1,17 @@
+import 'reflect-metadata';
+
 import { LitElement, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
+import { registry } from 'tsyringe';
 
 import './app-header/app-header';
 import './transaction-list/transaction-list';
+import { WalletService } from './wallet';
 
 @customElement('app-root')
+@registry([
+    // { token: WalletService, useClass: WalletService },
+])
 export class AppRoot extends LitElement {
 
     createRenderRoot () {
