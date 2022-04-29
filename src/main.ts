@@ -1,8 +1,26 @@
-/**
- * This is your entrypoint.
- *
- * Add your imports and any startup logic here. This file will be imported by
- * `index.html` and is the entry point for the rollup configuration.
- */
+import { LitElement, html, css } from 'lit';
+import { customElement, property } from 'lit/decorators.js';
 
-console.log('app started...');
+@customElement('app-root')
+export class AppRoot extends LitElement {
+
+    createRenderRoot() {
+        return this;
+    }
+
+    render () {
+        return html`
+            <div class="py-2">
+               <div class="container mx-auto flex justify-between">
+                   <h1 class="text-xl">Swivel homework</h1>
+                   <button class="sw-btn sw-btn--primary">
+                      Connect Metamask
+                   </button> 
+                </div>
+                <div>
+                    Content area
+                </div>
+            </div>
+        `;
+    }
+}
