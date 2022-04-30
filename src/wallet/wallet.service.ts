@@ -5,7 +5,7 @@ import { Web3Service } from '../web3';
 
 export interface WalletState {
     isConnecting: boolean;
-    wallet: { address: string } | null;
+    wallet: string | null;
 }
 
 @singleton()
@@ -33,12 +33,11 @@ export class WalletService {
     constructor (
         private _web3: Web3Service,
     ) {
-        this._currentAccount$.subscribe(address => {
-            this._stateManager$.pushChange({ wallet: { address } });
-        });
+        this._currentAccount$
+            .subscribe(wallet => this._stateManager$.pushChange({ wallet }));
     }
 
-    connectWallet (): Observable<string> {
+    connectWallet (): Observable<string | null> {
         this._stateManager$.pushChange({ isConnecting: true });
         return from(this._web3.connect()).pipe(
             switchMap(() => this._currentAccount$),
@@ -47,13 +46,13 @@ export class WalletService {
         );
     }
 
-    async disconnectWallet (): Promise<void> {
-
+    disconnectWallet (): void {
+        this._web3.disconnect();
     }
 
-    async toggleConnection (): Promise<void> {
-        if (this._stateManager$.rawState.wallet?.address) {
-            await this.disconnectWallet();
+    toggleConnection (): void {
+        if (this._stateManager$.rawState.wallet) {
+            this.disconnectWallet();
         } else {
             this.connectWallet().subscribe();
         }

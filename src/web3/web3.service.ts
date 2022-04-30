@@ -1,8 +1,12 @@
 import { ethers } from 'ethers';
-import { from, map, merge, Observable } from 'rxjs';
+import { from, map, merge, Observable, of, startWith, tap } from 'rxjs';
 import { singleton, inject } from 'tsyringe';
 import { observify } from '../shared/async/observify';
+import { StorageService } from '../storage/storage.service';
 import { ETHEREUM_TOKEN } from './ethereum';
+
+
+const CONNECTED_ACCOUNT_KEY = 'CONNECTED_ACCOUNT_KEY';
 
 @singleton()
 export class Web3Service {
@@ -11,23 +15,23 @@ export class Web3Service {
 
     constructor (
         @inject(ETHEREUM_TOKEN) private _ethereum: Window['ethereum'],
+        private _storage: StorageService,
     ) {
     }
 
     async connect (): Promise<void> {
-        await this.provider.send('eth_requestAccounts', []);
+        const result = (await this.provider.send('eth_requestAccounts', []) as string[]);
+        console.log(result);
+        if (result) {
+            this._storage.setItem(CONNECTED_ACCOUNT_KEY, result[0]);
+        }
     }
 
-    async disconnect (): Promise<void> {
-        //
+    disconnect (): void {
+        this._storage.removeItem(CONNECTED_ACCOUNT_KEY);
     }
 
-
-    getSigner (): ethers.providers.JsonRpcSigner {
-        return this.provider.getSigner();
-    }
-
-    getAccountChanges (): Observable<string> {
+    getAccountChanges (): Observable<string | null> {
         const ethereum = this.provider.provider as ethers.providers.Provider;
 
         const accountChangedStream$ = observify<string[]>(
@@ -36,10 +40,12 @@ export class Web3Service {
         );
 
         return merge(
-            accountChangedStream$,
-            from(this.provider.listAccounts()),
+            accountChangedStream$.pipe(
+                map(([account]) => account),
+            ),
+            this._storage.getItemChanges(CONNECTED_ACCOUNT_KEY),
         ).pipe(
-            map(([account]) => account),
+            tap(console.log),
         );
     }
 }
