@@ -24,18 +24,25 @@ export class AppHeader extends LitElement {
             <div class="flex justify-between">
             
                    <h1 class="text-xl">Swivel homework</h1>
-                   
-                   <button class="sw-btn sw-btn--primary"
-                           ?aria-busy="${ this._walletStateController.value.isConnecting }"
-                           @click="${ () => this._walletService.connectWallet() }">
-                           ${ when(
+                   <div class="sw-wallet-info">
+                     <span>${ this._walletStateController.value.wallet?.address }</span>
+                     <button class="sw-btn sw-btn--primary"
+                               ?aria-busy="${ this._walletStateController.value.isConnecting }"
+                               @click="${ () => this._toggleConnection() }">
+                               ${ when(
             this._walletStateController.value.isConnecting,
             () => 'Connecting',
-            () => this._walletStateController.value.wallet ? 'Disconnect' : 'Connect Metamask',
+            () => this._walletStateController.value.wallet?.address ? 'Disconnect' : 'Connect Metamask',
         ) }
-                   </button> 
+                       </button>    
+                  </div>
+                
                    
             </div>
         `;
+    }
+
+    private _toggleConnection (): void {
+        void this._walletService.toggleConnection();
     }
 }

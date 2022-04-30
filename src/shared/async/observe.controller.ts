@@ -9,8 +9,9 @@ export class ObserveController<T> implements ReactiveController {
     constructor (
         private _host: ReactiveControllerHost,
         private _source: Observable<T>,
-        public value?: T,
+        value?: T,
     ) {
+        this.value = value as T;
         this._host.addController(this);
     }
 

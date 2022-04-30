@@ -3,22 +3,21 @@ import 'reflect-metadata';
 import { LitElement, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { registry } from 'tsyringe';
-
 import './app-header/app-header';
 import './transaction-list/transaction-list';
-import { WalletService } from './wallet';
+import { ETHEREUM_PROVIDER_FACTORY, ETHEREUM_TOKEN } from './web3/ethereum';
 
 @customElement('app-root')
 @registry([
-    // { token: WalletService, useClass: WalletService },
+    { token: ETHEREUM_TOKEN, useFactory: ETHEREUM_PROVIDER_FACTORY },
 ])
 export class AppRoot extends LitElement {
 
-    createRenderRoot () {
+    createRenderRoot (): AppRoot {
         return this;
     }
 
-    render () {
+    render (): ReturnType<typeof html> {
         return html`
             <div class="sw-page">
             
