@@ -3,7 +3,9 @@ import { customElement } from 'lit/decorators.js';
 import { when } from 'lit/directives/when.js';
 import { container } from 'tsyringe';
 import { ObserveController } from '../shared/async/observe.controller';
+import { trimAddress } from '../shared/trim.directive';
 import { WalletService } from '../wallet';
+import '../shared/copy-to-clipboard';
 
 @customElement('app-header')
 export class AppHeader extends LitElement {
@@ -25,7 +27,7 @@ export class AppHeader extends LitElement {
             
                    <h1 class="text-xl">Swivel homework</h1>
                    <div class="sw-wallet-info">
-                     <span>${ this._walletStateController.value.wallet }</span>
+                    ${ this._getAddressTemplate() }
                      <button class="sw-btn sw-btn--primary"
                                ?aria-busy="${ this._walletStateController.value.isConnecting }"
                                @click="${ () => this._toggleConnection() }">
@@ -40,6 +42,15 @@ export class AppHeader extends LitElement {
                    
             </div>
         `;
+    }
+
+    private _getAddressTemplate (): ReturnType<typeof html> | null {
+        const address = this._walletStateController.value.wallet || '';
+        return address ? html`
+                    <sw-copy-button .textToCopy="${ address }">
+                          ${ trimAddress(address) }
+                    </sw-copy-button>
+                ` : null;
     }
 
     private _toggleConnection (): void {

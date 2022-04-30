@@ -33,7 +33,7 @@
   border: 1px solid var(--theme-brd);
   background-color: var(--theme-bg-2nd);
 
-  &:hover, &:focus {
+  &:hover {
     background-color: var(--theme-brd);
   }
 
@@ -42,9 +42,13 @@
     border: 1px solid var(--theme-btn-brd);
     color: white;
 
-    &:hover, &:focus {
+    &:hover {
       background-color: var(--theme-btn-brd);
     }
+  }
+
+  &--flat {
+    border: unset;
   }
 
   &--size-lg {
