@@ -1,4 +1,4 @@
-import { finalize, from, map, Observable, shareReplay, switchMap, take, withLatestFrom } from 'rxjs';
+import { filter, finalize, from, map, Observable, shareReplay, switchMap, take, withLatestFrom } from 'rxjs';
 import { singleton } from 'tsyringe';
 import { observify } from '../shared/async/observify';
 import { StateManager } from '../shared/state-management/state-manager';
@@ -43,7 +43,9 @@ export class WalletService {
         cb => this._web3.provider.on('block', cb),
         () => this._web3.provider.off('block'),
     ).pipe(
-        withLatestFrom(this._currentAccount$),
+        withLatestFrom(this._currentAccount$.pipe(
+            filter(Boolean),
+        )),
         switchMap(([ , currentAccount ]: [ unknown, string ]) => this._web3.provider.getBalance(currentAccount)),
         shareReplay(1),
     );
