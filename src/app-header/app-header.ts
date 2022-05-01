@@ -6,6 +6,7 @@ import { ObserveController } from '../shared/async/observe.controller';
 import { trimAddress } from '../shared/trim.directive';
 import { WalletService } from '../wallet';
 import '../shared/copy-to-clipboard';
+import './account-balance';
 
 @customElement('app-header')
 export class AppHeader extends LitElement {
@@ -27,6 +28,7 @@ export class AppHeader extends LitElement {
             
                    <h1 class="text-xl">Swivel homework</h1>
                    <div class="sw-wallet-info">
+                   <sw-account-balance></sw-account-balance>
                     ${ this._getAddressTemplate() }
                      <button class="sw-btn sw-btn--primary"
                                ?aria-busy="${ this._walletStateController.value.isConnecting }"
