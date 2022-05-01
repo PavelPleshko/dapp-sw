@@ -6,6 +6,7 @@ import { registry } from 'tsyringe';
 import './app-header/app-header';
 import './transaction-list/components/transaction-list';
 import { ETHEREUM_PROVIDER_FACTORY, ETHEREUM_TOKEN } from './web3/ethereum';
+import './faucet/faucet-form';
 
 @customElement('app-root')
 @registry([
@@ -28,7 +29,7 @@ export class AppRoot extends LitElement {
                 <div class="flex flex-row h-full">
                 
                     <div class="sw-sidebar basis-1/6 p-4">
-                           Sidebar
+                         <sw-faucet-form></sw-faucet-form>
                     </div>
                    
                     <app-transaction-list class="basis-5/6">
