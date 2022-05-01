@@ -79,8 +79,9 @@ app-transaction-item {
     border: 1px solid var(--theme-brd);
 
     > li {
-      @apply py-1;
+      @apply py-1 flex justify-between;
       > span:first-child {
+        @apply mr-3;
         font-weight: bold;
       }
     }
