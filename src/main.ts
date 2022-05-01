@@ -4,7 +4,7 @@ import { LitElement, html } from 'lit';
 import { customElement } from 'lit/decorators.js';
 import { registry } from 'tsyringe';
 import './app-header/app-header';
-import './transaction-list/transaction-list';
+import './transaction-list/components/transaction-list';
 import { ETHEREUM_PROVIDER_FACTORY, ETHEREUM_TOKEN } from './web3/ethereum';
 
 @customElement('app-root')
