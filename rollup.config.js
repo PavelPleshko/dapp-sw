@@ -21,7 +21,8 @@ export default {
             rootDir: './src',
         }),
     ],
-    onwarn (warning, warn) {
+    external: ['./main.css'],
+    onwarn(warning, warn) {
 
         // skip certain warnings
         if (warning.code === 'THIS_IS_UNDEFINED') return;
