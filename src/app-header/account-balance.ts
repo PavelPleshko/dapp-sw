@@ -3,7 +3,7 @@ import { customElement } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { container } from 'tsyringe';
 import { ObserveController } from '../shared/async/observe.controller';
-import { fixedNumber } from '../shared/number-utils/fixed.number';
+import { formatCurrency } from '../shared/number-utils/fixed.number';
 import { WalletService } from '../wallet';
 
 
@@ -30,10 +30,9 @@ export class AccountBalance extends LitElement {
             item => {
                 return html`
                         <span class="sw-balance-item inline-flex">
-                            <b class="p-1">${ fixedNumber(item.amount) }</b>
+                            <b class="p-1">${ formatCurrency(item.amount, item.currency) }</b>
                             <span class="sw-balance-item__currency p-1">${ item.currency }</span>
                         </span>
-                   
                 `;
             }) }
             </span>

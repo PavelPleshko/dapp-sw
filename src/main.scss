@@ -57,7 +57,7 @@
 }
 
 button {
-  &[aria-busy] {
+  &[aria-busy], &[disabled] {
     opacity: 0.6;
     border: 1px solid var(--theme-brd);
     pointer-events: none;
@@ -71,4 +71,19 @@ button {
 .sw-balance-item__currency {
   background-color: var(--theme-fg-dsbl);
   color: white;
+}
+
+app-transaction-item {
+  > ul {
+    @apply inline-flex flex-col shadow-lg p-2 rounded-sm;
+    border: 1px solid var(--theme-brd);
+
+    > li {
+      @apply py-1 flex justify-between;
+      > span:first-child {
+        @apply mr-3;
+        font-weight: bold;
+      }
+    }
+  }
 }

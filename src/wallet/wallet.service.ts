@@ -1,12 +1,13 @@
 import { filter, finalize, from, map, Observable, shareReplay, switchMap, take, withLatestFrom } from 'rxjs';
 import { singleton } from 'tsyringe';
 import { observify } from '../shared/async/observify';
+import { Currency } from '../shared/currency';
 import { StateManager } from '../shared/state-management/state-manager';
 import { Web3Service } from '../web3';
 
 
 export interface Balance {
-    currency: string;
+    currency: Currency;
     amount: string;
 }
 
@@ -59,7 +60,7 @@ export class WalletService {
         this.balance$.subscribe(balance => this._stateManager$.pushChange({
             balances: [
                 {
-                    currency: 'ETH',
+                    currency: Currency.ETH,
                     amount: balance.toString(),
                 },
             ],
