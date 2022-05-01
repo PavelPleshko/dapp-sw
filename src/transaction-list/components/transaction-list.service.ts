@@ -1,13 +1,13 @@
-import { distinctUntilChanged, filter, map, switchMap, take } from 'rxjs';
+import { filter, map, switchMap, take } from 'rxjs';
 import { injectable } from 'tsyringe';
 import { StateManager } from '../../shared/state-management/state-manager';
 import { WalletService } from '../../wallet';
-import { TransactionsApi } from '../api/transactions.api';
+import { Transaction, TransactionsApi } from '../api/transactions.api';
 
 
 interface TransactionListState {
     isLoading: boolean;
-    items: any[];
+    items: Transaction[];
 }
 
 @injectable()

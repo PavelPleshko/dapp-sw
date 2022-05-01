@@ -2,6 +2,25 @@ import { singleton } from 'tsyringe';
 import { EtherScanClient } from '../../etherscan';
 
 
+export interface Transaction {
+    blockHash: string;
+    blockNumber: string;
+    confirmations: string;
+    contractAddress: string;
+    cumulativeGasUsed: string;
+    from: string;
+    gas: string;
+    gasPrice: string;
+    gasUsed: string;
+    hash: string;
+    timeStamp: string;
+    to: string;
+    transactionIndex: string;
+    txreceipt_status: string;
+    value: string;
+}
+
+
 @singleton()
 export class TransactionsApi {
 
@@ -9,7 +28,7 @@ export class TransactionsApi {
         private _etherScanClient: EtherScanClient,
     ) {}
 
-    getTransactionsForAddress (address: string): Promise<any[]> {
+    getTransactionsForAddress (address: string): Promise<Transaction[]> {
 
         const query = {
             action: 'txlist',
@@ -19,6 +38,6 @@ export class TransactionsApi {
             sort: 'asc',
         };
 
-        return this._etherScanClient.get<any[]>(query);
+        return this._etherScanClient.get<Transaction[]>(query);
     }
 }
