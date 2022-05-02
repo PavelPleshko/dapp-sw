@@ -1,6 +1,7 @@
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import { copy } from '@web/rollup-plugin-copy';
+import json from "@rollup/plugin-json";
 
 export default {
     input: './dist/main.js',
@@ -14,6 +15,7 @@ export default {
             browser: true,
         }),
         commonjs(),
+        json(),
         copy({
             patterns: [
                 'index.html',

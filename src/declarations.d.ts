@@ -5,3 +5,8 @@ declare global {
         ethereum: providers.ExternalProvider;
     }
 }
+
+declare module '*.json' {
+    const value: unknown;
+    export default value;
+}

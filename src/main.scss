@@ -19,6 +19,11 @@
 .sw-page {
   width: 100vw;
   height: 100vh;
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  align-content: stretch;
+  align-items: stretch;
   overflow: hidden;
   background-color: var(--theme-bg);
 }
@@ -26,6 +31,12 @@
 .sw-sidebar {
   height: 100%;
   background-color: var(--theme-bg-2nd);
+}
+
+.sw-content {
+  overflow: auto;
+  align-items: stretch;
+  align-content: stretch;
 }
 
 .sw-btn {
@@ -73,10 +84,21 @@ button {
   color: white;
 }
 
+.transaction-list {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
 app-transaction-item {
+
+  @apply mb-2 flex;
+
   > ul {
     @apply inline-flex flex-col shadow-lg p-2 rounded-sm;
     border: 1px solid var(--theme-brd);
+    flex-grow: 1;
+    max-width: 35rem;
 
     > li {
       @apply py-1 flex justify-between;

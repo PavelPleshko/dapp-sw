@@ -1,7 +1,11 @@
+import { parseUnits } from 'ethers/lib/utils';
 import { LitElement, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import { filter, map, switchMap, take } from 'rxjs';
 import { container } from 'tsyringe';
 import { ObserveController } from '../shared/async/observe.controller';
+import { Currency } from '../shared/currency';
+import { Erc20Api } from '../tokens/erc20.api';
 import { WalletService } from '../wallet';
 
 
@@ -9,6 +13,8 @@ import { WalletService } from '../wallet';
 export class FaucetForm extends LitElement {
 
     private _walletService = container.resolve(WalletService);
+
+    private _erc20DaiApi = container.resolve<Erc20Api>(Currency.DAI);
 
     private _walletStateController = new ObserveController(
         this,
@@ -32,19 +38,28 @@ export class FaucetForm extends LitElement {
                      @change="${ (e: InputEvent) => this._onAmountInput(e) }" min="0" placeholder="Amount" class="p-1" />
                     of <b>DAI</b>
                </div>
-                <button class="sw-btn sw-btn--primary">Submit</button>
+                <button class="sw-btn sw-btn--primary" .disabled="${ !this.amount }">Submit</button>
            </form>
         `;
     }
 
     private _onRequestTokens (e: Event): void {
         e.preventDefault();
-
-        this.amount = null;
+        this._walletService.walletState$.pipe(
+            map(state => state.wallet),
+            filter(Boolean),
+            take(1),
+            switchMap(address => this._erc20DaiApi.faucet(address, parseUnits(`${ this.amount || '' }`, 18).toString())),
+        ).subscribe(() => this._resetForm());
     }
+
 
     // FIXME this should be done through some form inputs abstraction, but for the sake of dev velocity we leave it as is
     private _onAmountInput (e: InputEvent): void {
         this.amount = +(e.target as HTMLInputElement).value;
+    }
+
+    private _resetForm (): void {
+        this.amount = null;
     }
 }
