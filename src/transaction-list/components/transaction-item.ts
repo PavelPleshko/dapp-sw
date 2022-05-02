@@ -32,7 +32,7 @@ export class TransactionItem extends LitElement {
                     <span>Amount</span><span>${ formatCurrency(this.transaction.value, Currency.ETH) } <b>ETH</b></span>
                 </li>
                  <li>
-                    <span>Fee</span><span>${ formatCurrency(this.transaction.gasUsed * this.transaction.gasPrice, Currency.ETH, 10) } <b>ETH</b></span>
+                    <span>Fee</span><span>${ formatCurrency(+this.transaction.gasUsed * +this.transaction.gasPrice, Currency.ETH, 10) } <b>ETH</b></span>
                 </li>
                 <li>
                     <span>Etherscan</span><span>${ trimAddress(this.transaction.hash) }</span>

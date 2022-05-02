@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { from, map, merge, Observable, of, startWith, tap } from 'rxjs';
+import { map, merge, Observable, tap } from 'rxjs';
 import { singleton, inject } from 'tsyringe';
 import { observify } from '../shared/async/observify';
 import { StorageService } from '../storage/storage.service';
@@ -21,7 +21,6 @@ export class Web3Service {
 
     async connect (): Promise<void> {
         const result = (await this.provider.send('eth_requestAccounts', []) as string[]);
-        console.log(result);
         if (result) {
             this._storage.setItem(CONNECTED_ACCOUNT_KEY, result[0]);
         }
@@ -29,6 +28,11 @@ export class Web3Service {
 
     disconnect (): void {
         this._storage.removeItem(CONNECTED_ACCOUNT_KEY);
+    }
+
+    getSigner (): ethers.Signer {
+        const connected = this._storage.getItem(CONNECTED_ACCOUNT_KEY);
+        return this.provider.getSigner(connected as string);
     }
 
     getAccountChanges (): Observable<string | null> {
@@ -41,11 +45,9 @@ export class Web3Service {
 
         return merge(
             accountChangedStream$.pipe(
-                map(([account]) => account),
+                map(([ account ]) => account),
             ),
             this._storage.getItemChanges(CONNECTED_ACCOUNT_KEY),
-        ).pipe(
-            tap(console.log),
         );
     }
 }

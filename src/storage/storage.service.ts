@@ -1,4 +1,4 @@
-import { filter, fromEvent, map, merge, Observable, startWith, Subject, tap } from 'rxjs';
+import { filter, fromEvent, map, merge, Observable, startWith, Subject } from 'rxjs';
 import { singleton } from 'tsyringe';
 
 const APP_NAMESPACE = 'SW_HM';
