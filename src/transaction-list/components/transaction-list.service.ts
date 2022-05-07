@@ -34,7 +34,6 @@ export class TransactionListService {
             take(1),
             switchMap(wallet => this._transactionsApi.getTransactionsForAddress(wallet)),
         ).subscribe(items => {
-            console.log(items);
             this._txListStateManager$.pushChange({ isLoading: false, items });
         });
     }

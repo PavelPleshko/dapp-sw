@@ -1,8 +1,8 @@
 import { filter, finalize, from, map, Observable, shareReplay, switchMap, take, withLatestFrom } from 'rxjs';
-import { singleton } from 'tsyringe';
-import { observify } from '../shared/async/observify';
+import { inject, singleton } from 'tsyringe';
 import { Currency } from '../shared/currency';
 import { StateManager } from '../shared/state-management/state-manager';
+import { Erc20Api } from '../tokens/erc20.api';
 import { Web3Service } from '../web3';
 
 
@@ -40,10 +40,19 @@ export class WalletService {
         map(({ wallet }) => !!wallet),
     );
 
-    balance$ = observify(
-        cb => this._web3.provider.on('block', cb),
-        () => this._web3.provider.off('block'),
+    accountBalances$ = this._web3.blockMined$.pipe(
+        withLatestFrom(this._currentAccount$),
     ).pipe(
+        map(([ , currentAccount ]: [ unknown, string | null ]) => currentAccount),
+        filter(Boolean),
+        switchMap(currentAccount => Promise.all([
+            this._daiApi.getBalance(currentAccount).then(res => ({ currency: Currency.DAI, amount: res.toString() })),
+            this._web3.provider.getBalance(currentAccount).then(res => ({ currency: Currency.ETH, amount: res.toString() })),
+        ])),
+        shareReplay(1),
+    );
+
+    balance$ = this._web3.blockMined$.pipe(
         withLatestFrom(this._currentAccount$.pipe(
             filter(Boolean),
         )),
@@ -53,17 +62,13 @@ export class WalletService {
 
     constructor (
         private _web3: Web3Service,
+        @inject(Currency.DAI) private _daiApi: Erc20Api,
     ) {
         this._currentAccount$
             .subscribe(wallet => this._stateManager$.pushChange({ wallet }));
 
-        this.balance$.subscribe(balance => this._stateManager$.pushChange({
-            balances: [
-                {
-                    currency: Currency.ETH,
-                    amount: balance.toString(),
-                },
-            ],
+        this.accountBalances$.subscribe(balances => this._stateManager$.pushChange({
+            balances,
         }));
     }
 

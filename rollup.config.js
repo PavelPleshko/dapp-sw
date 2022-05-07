@@ -1,5 +1,6 @@
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
+import globals from 'rollup-plugin-node-globals';
 import { copy } from '@web/rollup-plugin-copy';
 import json from "@rollup/plugin-json";
 
@@ -22,6 +23,7 @@ export default {
             ],
             rootDir: './src',
         }),
+        globals(),
     ],
     external: ['./main.css'],
     onwarn(warning, warn) {
