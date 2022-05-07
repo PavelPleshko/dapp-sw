@@ -1,5 +1,5 @@
-import { ethers } from 'ethers';
-import { map, merge, Observable, tap } from 'rxjs';
+import { ethers, utils } from 'ethers';
+import { from, map, merge, Observable, of, share, switchMap } from 'rxjs';
 import { singleton, inject } from 'tsyringe';
 import { observify } from '../shared/async/observify';
 import { StorageService } from '../storage/storage.service';
@@ -12,6 +12,13 @@ const CONNECTED_ACCOUNT_KEY = 'CONNECTED_ACCOUNT_KEY';
 export class Web3Service {
 
     provider = new ethers.providers.Web3Provider(this._ethereum);
+
+    blockMined$ = observify(
+        cb => this.provider.on('block', cb),
+        () => this.provider.off('block'),
+    ).pipe(
+        share(),
+    );
 
     constructor (
         @inject(ETHEREUM_TOKEN) private _ethereum: Window['ethereum'],
@@ -45,9 +52,19 @@ export class Web3Service {
 
         return merge(
             accountChangedStream$.pipe(
-                map(([ account ]) => account),
+                map(([account]) => account),
             ),
-            this._storage.getItemChanges(CONNECTED_ACCOUNT_KEY),
+            this._storage.getItemChanges(CONNECTED_ACCOUNT_KEY).pipe(
+                switchMap(savedAddress => savedAddress
+                    ? from(this.provider.listAccounts())
+                        .pipe(
+                            map(accounts => {
+                                const current = accounts.find(account => account === utils.getAddress(savedAddress));
+                                return current || null;
+                            }),
+                        )
+                    : of(null)),
+            ),
         );
     }
 }
